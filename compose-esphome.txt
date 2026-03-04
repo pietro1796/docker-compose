@@ -1,0 +1,16 @@
+services:
+  esphome-dashboard-linux:
+    mem_limit: 128m
+    memswap_limit: 128m
+    image: ghcr.io/esphome/esphome:latest
+    ports:
+      - "6052:6052"
+    container_name: esphome-dashboard
+    environment:
+      - ESPHOME_DASHBOARD_USE_PING=true
+
+    network_mode: host
+    volumes:
+      - /home/esphome/config:/config
+    restart: unless-stopped
+    restart: unless-stopped

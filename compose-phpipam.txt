@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  phpipam-web:
+    mem_limit: 128m
+    memswap_limit: 128m
+    image: phpipam/phpipam-www:latest
+    ports:
+      - "8888:80"
+    environment:
+      - TZ=Europe/Rome
+      - IPAM_DATABASE_HOST=phpipam-mariadb
+      - IPAM_DATABASE_PASS=pietro96X
+      - IPAM_DATABASE_WEBHOST=%
+      - IPAM_DISABLE_INSTALLER=1
+      - IPAM_TRUST_X_FORWARDED=1
+    restart: unless-stopped
+    volumes:
+      - /home/phpipam/phpipam-logo:/phpipam/css/images/logo
+      - /home/phpipam/phpipam-ca:/usr/local/share/ca-certificates:ro
+    depends_on:
+      - phpipam-mariadb
+    networks:
+      - docker-service
+
+  phpipam-cron:
+    mem_limit: 128m
+    memswap_limit: 128m
+    image: phpipam/phpipam-cron:latest
+    environment:
+      - TZ=Europe/Rome
+      - IPAM_DATABASE_HOST=phpipam-mariadb
+      - IPAM_DATABASE_PASS=pietro96X
+      - SCAN_INTERVAL=1h
+    restart: unless-stopped
+    volumes:
+      - /home/phpipam/phpipam-ca:/usr/local/share/ca-certificates:ro
+    depends_on:
+      - phpipam-mariadb
+    networks:
+      - docker-service
+
+  phpipam-mariadb:
+    mem_limit: 256m
+    memswap_limit: 256m
+    image: mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=pietro96X
+    restart: unless-stopped
+    volumes:
+      - /home/phpipam/phpipam-db-data:/var/lib/mysql
+    networks:
+      - docker-service
+
+networks:
+  docker-service:
+    external: true

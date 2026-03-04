@@ -1,0 +1,26 @@
+services:
+  n8n:
+    mem_limit: 512m
+    memswap_limit: 512m
+    image: n8nio/n8n:latest
+    container_name: n8n
+    networks:
+      - docker-service
+    volumes:
+      - /home/n8n/n8n_data:/home/node/.n8n
+    environment:
+      - GENERIC_TIMEZONE=Europe/Rome
+      - NODE_ENV=production
+      - N8N_SECURE_COOKIE=false
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_PROXY_HOPS=1
+      - WEBHOOK_URL=https://n8n.stacknet.it/
+      - DB_SQLITE_POOL_SIZE=1
+    ports:
+      - "5678:5678"
+    restart: unless-stopped
+
+networks:
+  docker-service:
+    external: true
