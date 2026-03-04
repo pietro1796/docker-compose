@@ -1,0 +1,60 @@
+services:
+  guacd:
+    image: guacamole/guacd:latest
+    container_name: guacd
+    mem_limit: 256m
+    memswap_limit: 256m
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - docker-service
+
+  guac-db:
+    image: mysql:8.0
+    container_name: guac-mysql
+    mem_limit: 512m
+    memswap_limit: 512m
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: guac_root_pass
+      MYSQL_DATABASE: guacamole_db
+      MYSQL_USER: guac_user
+      MYSQL_PASSWORD: guac_user_pass
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /home/guacamole/mysql:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - docker-service
+
+  guacamole:
+    image: guacamole/guacamole:latest
+    container_name: guacamole
+    mem_limit: 512m
+    memswap_limit: 512m
+    restart: unless-stopped
+    depends_on:
+      - guacd
+      - guac-db
+    environment:
+      GUACD_HOSTNAME: guacd
+      MYSQL_HOSTNAME: guac-db
+      MYSQL_DATABASE: guacamole_db
+      MYSQL_USER: guac_user
+      MYSQL_PASSWORD: guac_user_pass
+      REMOTE_IP_VALVE_ENABLED: true
+
+    ports:
+      - "8080:8080"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /home/guacamole/drive:/drive
+      - /home/guacamole/record:/record
+    networks:
+      - docker-service
+
+networks:
+  docker-service:
+    external: true

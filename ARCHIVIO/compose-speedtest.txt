@@ -1,0 +1,34 @@
+services:
+    speedtest-tracker:
+        mem_limit: 256m
+        memswap_limit: 256m
+        image: lscr.io/linuxserver/speedtest-tracker:latest
+        restart: unless-stopped
+        container_name: speedtest-tracker
+        ports:
+            - 800:80
+            - 4430:443
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - APP_KEY=base64:Objg9XTqCnUcnwN6m965u6iKanKkcUMUiY46cwMKQ6I=
+            - DB_CONNECTION=sqlite
+            - ADMIN_NAME=admin
+            - ADMIN_PASSWORD=pietro96X
+            - ADMIN_EMAIL=p.gano96@gmail.com
+            - APP_URL=https://speed.stacknet.it
+            - ASSET_URL=https://speed.stacknet.it
+            - APP_TIMEZONE=Europe/Rome
+            - DISPLAY_TIMEZONE=Europe/Rome
+            - PRUNE_RESULTS_OLDER_THAN=30
+            - SPEEDTEST_SCHEDULE=0 0,4,8,12,16,20 * * *
+        volumes:
+            - /home/speedtest-tracker:/config
+            - /home/speedtest-tracker/keys:/config/keys
+
+        networks:
+           - docker-service
+
+networks:
+  docker-service:
+    external: true
