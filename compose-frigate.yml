@@ -10,7 +10,7 @@ services:
     cap_add:
       - CAP_PERFMON
     privileged: True
-    shm_size: "256mb"
+    shm_size: "384b"
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
     volumes:
