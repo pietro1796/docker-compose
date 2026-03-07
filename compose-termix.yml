@@ -1,0 +1,19 @@
+services:
+  termix:
+    mem_limit: 256m
+    memswap_limit: 256m
+    image: ghcr.io/lukegus/termix:latest
+    container_name: termix
+    restart: unless-stopped
+    networks:
+      - docker-service
+    ports:
+      - "5680:8080"
+    volumes:
+      - /home/termix/data:/app/data
+    environment:
+      PORT: "5680"
+
+networks:
+  docker-service:
+    external: true
