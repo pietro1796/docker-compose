@@ -12,7 +12,7 @@ services:
     volumes:
       - /home/termix/data:/app/data
     environment:
-      PORT: "5680"
+      PORT: "8080"
 
 networks:
   docker-service:
